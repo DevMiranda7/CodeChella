@@ -44,7 +44,7 @@ public class EventoService {
                     eventoExistente.setDescricao(eventoDTO.descricao());
                     return eventoRepository.save(eventoExistente);
             })
-            .map(EventoDTO::toDto)
+            .map(EventoDTO::toDto);
 
     }
 }
