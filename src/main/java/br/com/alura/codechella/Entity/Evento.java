@@ -1,5 +1,6 @@
 package br.com.alura.codechella.Entity;
 
+import br.com.alura.codechella.DTO.EventoDTO;
 import br.com.alura.codechella.Enums.TipoEvento;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -19,6 +20,7 @@ public class Evento {
     private LocalDate data;
 
     private String descricao;
+
 
     public Long getId() {
         return id;
