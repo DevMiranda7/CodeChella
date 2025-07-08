@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 import java.awt.*;
 import java.time.Duration;
@@ -19,9 +20,16 @@ import java.time.Duration;
 @RestController
 @RequestMapping("/eventos")
 public class EventoController {
-    @Autowired
 
-    private EventoService service;
+
+    private final EventoService service;
+
+    private final Sinks.Many<EventoDTO> eventoSink;
+
+    public EventoController(EventoService service) {
+        this.service = service;
+        this.eventoSink = Sinks.many().multicast().onBackpressureBuffer();
+    }
 
     @GetMapping
     public Flux<EventoDTO> obterTodos(){
@@ -30,7 +38,8 @@ public class EventoController {
 
     @GetMapping(value = "/categoria/{tipo}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<EventoDTO> obterPorTipo(@PathVariable String tipo){
-        return  Flux.from(service.obterPortipo(tipo)).delayElements(Duration.ofSeconds(4));
+        return  Flux.merge(service.obterPortipo(tipo), eventoSink.asFlux())
+                .delayElements(Duration.ofSeconds(4));
     }
 
     @GetMapping("/{id}")
@@ -40,7 +49,7 @@ public class EventoController {
 
     @PostMapping
     public Mono<EventoDTO> cadastro(@RequestBody EventoDTO eventoDTO){
-        return service.cadastrar(eventoDTO);
+        return service.cadastrar(eventoDTO).doOnSuccess(e -> eventoSink.tryEmitNext(e));
     }
 
     @DeleteMapping("/{idDelete}")
