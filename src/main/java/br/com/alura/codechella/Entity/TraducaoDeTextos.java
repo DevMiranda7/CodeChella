@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 public class TraducaoDeTextos {
 
-    public static Mono<String> obterTraducao(String texto, String idioma){
+    public static Mono<String> obterTraducaoo(String texto, String idioma){
         WebClient webClient = WebClient.builder()
                 .baseUrl("https://api-free.deepl.com/v2/translate").build();
 
@@ -19,9 +19,8 @@ public class TraducaoDeTextos {
         requisicao.add("text", texto);
         requisicao.add("target_lang", idioma);
 
-        return webClient
-                .post()
-                .header("Authorization","DeepL-Auth-Key"
+        return webClient.post()
+                .header("Authorization","DeepL-Auth-Key "
                         + System.getenv("JAVA_API"))
                 .body(BodyInserters.fromFormData(requisicao))
                 .retrieve()

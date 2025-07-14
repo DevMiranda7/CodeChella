@@ -28,5 +28,4 @@ public record EventoDTO(
         evento.setDescricao(this.descricao);
         return evento;
     }
-
 }

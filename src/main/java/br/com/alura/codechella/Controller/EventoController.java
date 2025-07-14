@@ -7,6 +7,7 @@ import br.com.alura.codechella.Service.EventoService;
 import jdk.jfr.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,14 @@ public class EventoController {
         return service.obterPorId(id);
     }
 
+    @GetMapping("/{id}/traduzir/{idioma}")
+    public Mono<String> obterTraducao(@PathVariable Long id, @PathVariable String idioma){
+        return service.obterTraducao(id,idioma);
+    }
+    
+
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<EventoDTO> cadastro(@RequestBody EventoDTO eventoDTO){
         return service.cadastrar(eventoDTO).doOnSuccess(e -> eventoSink.tryEmitNext(e));
     }

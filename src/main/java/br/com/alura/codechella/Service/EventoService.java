@@ -1,6 +1,7 @@
 package br.com.alura.codechella.Service;
 
 import br.com.alura.codechella.DTO.EventoDTO;
+import br.com.alura.codechella.Entity.TraducaoDeTextos;
 import br.com.alura.codechella.Enums.TipoEvento;
 import br.com.alura.codechella.Repository.EventoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,10 @@ public class EventoService {
     public Flux<EventoDTO> obterPortipo(String tipo) {
         TipoEvento tipoEvento = TipoEvento.valueOf(tipo.toUpperCase());
         return eventoRepository.findByTipo(tipoEvento).map(EventoDTO::toDto);
+    }
+
+    public Mono<String> obterTraducao(Long id, String idioma) {
+        return eventoRepository.findById(id)
+                .flatMap(e -> TraducaoDeTextos.obterTraducaoo(e.getDescricao(),idioma));
     }
 }
